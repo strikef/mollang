@@ -13,7 +13,7 @@ endif() # MSVC
 
 option(FORCE_UTF8 "Force using UTF-8 on presumably unsupported platform" OFF)
 if (FORCE_UTF8)
-add_compile_definitions(FORCE_UTF8)
+    add_compile_definitions(FORCE_UTF8)
 endif() # FORCE_UTF8
 
 # Specify LLVM directory to use
@@ -26,7 +26,9 @@ add_library(PortableString ${SRC_DIR}/portable_string.cpp)
 add_library(FS ${SRC_DIR}/fs.cpp)
 
 add_library(MollangToken OBJECT ${SRC_DIR}/token.cpp)
-target_compile_options(MollangToken PRIVATE -fPIC)
+if (BUILD_SHARED_LIBS AND (UNIX AND NOT APPLE))
+    target_compile_options(MollangToken PRIVATE -fPIC)
+endif()
 target_link_libraries(MollangToken PortableString)
 
 # add_library(MollangParser ${SRC_DIR}/parser.cpp)
