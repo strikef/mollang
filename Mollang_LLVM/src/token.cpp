@@ -1,4 +1,5 @@
 #include "token.h"
+// WARNING: this file must be saved in CP949 format to use in Windows
 
 namespace {
 using namespace mollang::token;
