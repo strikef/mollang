@@ -5,7 +5,16 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
+if (MSVC AND BUILD_SHARED_LIBS)
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
+endif() # MSVC
+
+option(FORCE_UTF8 "Force using UTF-8 on presumably unsupported platform" OFF)
+if (FORCE_UTF8)
+add_compile_definitions(FORCE_UTF8)
+endif() # FORCE_UTF8
 
 # Specify LLVM directory to use
 # set(LLVM_ROOT )

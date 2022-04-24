@@ -236,16 +236,20 @@ Result<Token, InvalidSyntaxError>
 try_parse_func_name(StringIter &itr, const size_t __row,
                     size_t &__column_cur) noexcept {
   using RetType = Result<Token, InvalidSyntaxError>;
+  namespace ps = portable_string;
   String tok(**itr);
 
   const size_t column_begin = __column_cur;
 
   auto c = **itr;
-  if (c >= "마" && c < "바" && c != "몰") {
+  // due to irregularity in CP949, number of comparisons should be made
+  if ((ps::lexi_ge(c, "마") || ps::lexi_ge(c, "맊")) &&
+      (ps::lexi_lt(c, "바") || ps::lexi_lt(c, "밙")) && c != "몰") {
     tok.append(*itr++.peek());
     __column_cur++;
     c = **itr;
-    if (c >= "라" && c < "바" && c != "루") {
+    if ((ps::lexi_ge(c, "라") || ps::lexi_ge(c, "띾")) &&
+        (ps::lexi_lt(c, "마") || ps::lexi_lt(c, "맊")) && c != "루") {
       return RetType::Ok(
           Token::FuncName(Location(__row, column_begin, __column_cur), tok));
     }

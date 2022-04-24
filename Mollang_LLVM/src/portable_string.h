@@ -5,13 +5,13 @@
 #include <string>
 
 namespace portable_string {
-#if defined(_WIN32) || defined(_WIN64)
-using String = std::wstring;
-using StringView = std::wstring_view;
-#else // defined(_WIN32) || defined(_WIN64)
-#define USE_UTF8
 using String = std::string;
 using StringView = std::string_view;
+
+#if !defined(FORCE_UTF8) && (defined(_WIN32) || defined(_WIN64))
+#define USE_CP949
+#else // defined(_WIN32) || defined(_WIN64)
+#define USE_UTF8
 #endif // defined(_WIN32) || defined(_WIN64)
 
 class StringIter {
@@ -38,12 +38,13 @@ public:
 };
 
 template <typename T> String to_string(const T &item) {
-#ifdef USE_UTF8
   return std::to_string(item);
-#else  // USE_UTF8
-  return std::to_wstring(item);
-#endif // USE_UTF8
 }
+
+bool lexi_lt(const StringView c, const char *str) noexcept;
+bool lexi_le(const StringView c, const char *str) noexcept;
+bool lexi_gt(const StringView c, const char *str) noexcept;
+bool lexi_ge(const StringView c, const char *str) noexcept;
 } // namespace portable_string
 
 using String = portable_string::String;
