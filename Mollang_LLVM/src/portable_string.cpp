@@ -11,9 +11,14 @@ unsigned char remove_char_sign(const char __c) noexcept {
 // are both using EUC-KR or CP949?
 bool use_same_encoding(const StringView __op1,
                        const StringView __op2) noexcept {
+  const auto op1_first_byte = remove_char_sign(__op1[0]);
   const auto op1_second_byte = remove_char_sign(__op1[1]);
+  const auto op2_first_byte = remove_char_sign(__op2[0]);
   const auto op2_second_byte = remove_char_sign(__op2[1]);
-  return ((op1_second_byte >= 0xA1) == (op2_second_byte >= 0xA1));
+
+  const auto op1_is_EUCKR = op1_first_byte >= 0xB0 && op1_second_byte >= 0xA1;
+  const auto op2_is_EUCKR = op2_first_byte >= 0xB0 && op2_second_byte >= 0xA1;
+  return op1_is_EUCKR == op2_is_EUCKR;
 }
 #endif // USE_CP949
 }
