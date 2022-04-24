@@ -2,6 +2,7 @@
 
 #include <filesystem>
 #include <fstream>
+#include <sstream>
 #include <system_error>
 
 namespace stdfs = std::filesystem;
@@ -30,12 +31,9 @@ readFile(const StringView __filepath) noexcept {
   }
 
   std::ifstream ifstr(path);
-  ifstr.seekg(0, std::ios::end);
-  const auto size = ifstr.tellg();
-  String content(size, '\0');
-  ifstr.seekg(0, std::ios::beg);
-  ifstr.read(content.data(), size);
-  return RetType::Ok(std::move(content));
+  std::stringstream buffer;
+  buffer << ifstr.rdbuf();
+  return RetType::Ok(buffer.str());
 }
 
 Result<size_t, FilesystemError>
